@@ -143,7 +143,7 @@ public class LocationUpdatesService extends Service {
         };
 
         createLocationRequest();
-        getLastLocation();
+        //getLastLocation();
 
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
@@ -269,41 +269,41 @@ public class LocationUpdatesService extends Service {
     /**
      * Returns the {@link NotificationCompat} used as part of the foreground service.
      */
-    private Notification getNotification() {
+    private  Notification  getNotification() {
         Intent intent = new Intent(this, LocationUpdatesService.class);
 
-        CharSequence text = Utils.getLocationText(mLocation);
-
+         CharSequence text = Utils.getLocationText(mLocation);
+        Utils.onLocationChanged(mLocation,this);
         // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
-        intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true);
+         intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true);
 
         // The PendingIntent that leads to a call to onStartCommand() in this service.
-        PendingIntent servicePendingIntent = PendingIntent.getService(this, 0, intent,
+         PendingIntent servicePendingIntent = PendingIntent.getService(this, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         // The PendingIntent to launch activity.
-        PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
+                 new Intent(this, MainActivity.class), 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .addAction(R.drawable.ic_launch, getString(R.string.launch_activity),
-                        activityPendingIntent)
-                .addAction(R.drawable.ic_cancel, getString(R.string.remove_location_updates),
-                        servicePendingIntent)
-                .setContentText(text)
-                .setContentTitle(Utils.getLocationTitle(this))
+                  .addAction(R.drawable.ic_launch, getString(R.string.launch_activity),
+                          activityPendingIntent)
+                  .addAction(R.drawable.ic_cancel, getString(R.string.remove_location_updates),
+                          servicePendingIntent)
+                  .setContentText(text)
+                  .setContentTitle(Utils.getLocationTitle(this))
                 .setOngoing(true)
                 .setPriority(Notification.PRIORITY_HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker(text)
-                .setWhen(System.currentTimeMillis());
+                  .setSmallIcon(R.mipmap.ic_launcher)
+                  .setTicker(text)
+                 .setWhen(System.currentTimeMillis());
 
         // Set the Channel ID for Android O.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId(CHANNEL_ID); // Channel ID
-        }
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+             builder.setChannelId(CHANNEL_ID); // Channel ID
+         }
 
-        return builder.build();
+         return builder.build();
     }
 
     private void getLastLocation() {
